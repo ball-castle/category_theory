@@ -1,0 +1,733 @@
+## 核心判断
+
+想让这篇论文真正接近二区，甚至具备一区竞争力，必须把目标从：
+
+> “第一次在 UniMath 里定义 framed bicategory”
+
+升级成：
+
+> **提出并证明一个关于单值 equipment 的结构性定理，建立可复用且机器验证的 mates 演算，并用它推出一个此前难以形式化的重要应用定理。**
+
+原因很直接：已有《Univalent Double Categories》不仅做了形式化，还提供了两种等价定义、单值性原理和多类实例；而论文自己已经指出，单纯把 framed bicategories 做成 `DoubleCat` 的满子双范畴是一条相对直接的延伸路线。只做这一步，审稿人很可能认为贡献偏增量。([arXiv][1])
+
+因此，真正值得冲击较高水平的论文应该围绕一个统一问题：
+
+> **在单值基础下，equipment 结构能否被内在地刻画为一种与具体 companion/conjoint 选择无关的性质，并能否由此建立一个可计算、可组合、机器验证的二维 mates 演算？**
+
+---
+
+# 一、必须拥有的核心贡献
+
+## 1. 一个真正的主定理：Equipment Structure Identity Theorem
+
+最重要的目标不是“定义 equipment”，而是证明类似下面的结构恒等原理。
+
+设 (\mathbb D) 是满足适当单值条件的 pseudo double category。研究：
+
+[
+\operatorname{EquipStr}(\mathbb D)
+]
+
+即 (\mathbb D) 上所有 equipment 结构组成的类型。
+
+目标证明以下结论之一：
+
+[
+\operatorname{isProp}
+\bigl(\operatorname{EquipStr}(\mathbb D)\bigr),
+]
+
+或者更强地，当该类型非空时：
+
+[
+\operatorname{isContr}
+\bigl(\operatorname{EquipStr}(\mathbb D)\bigr).
+]
+
+它表达：
+
+> 在合适的单值条件下，一个双范畴“成为 equipment”本质上是一种性质，而不是依赖任意选择的附加数据。
+
+具体必须区分：
+
+[
+\forall f,\ \exists f_\ast,\quad f_\ast\text{ 是 }f\text{ 的 companion}
+]
+
+和
+
+[
+\prod_f
+\sum_{f_\ast}
+\operatorname{isCompanion}(f,f_\ast).
+]
+
+前者是“每个态射存在 companion”，后者是“为每个态射选择一个 companion”。
+
+论文必须回答：
+
+1. 单个 companion 的类型是否可缩；
+2. 全局 chosen companions 的类型是否可缩；
+3. companion 和 conjoint 同时存在时是否仍可缩；
+4. 是否需要局部单值性、对象单值性或更强条件；
+5. 哪些条件是充分的，哪些是必要的；
+6. 结论失败时，障碍究竟是什么。
+
+这才是论文最有可能被审稿人记住的结果。
+
+### 最低要求
+
+不能只证明：
+
+> 两个 companions 唯一同构。
+
+因为这类唯一性结果在双范畴理论中已有经典背景，近期工作也持续研究 companionship 的同伦唯一性。([arXiv][2])
+
+必须进一步利用单值性把：
+
+[
+\text{唯一到同构}
+]
+
+提升成：
+
+[
+\text{身份类型、可缩性或结构恒等原理}.
+]
+
+---
+
+## 2. 三种 equipment 定义之间的精确等价
+
+论文应当比较至少以下三种定义。
+
+### 定义 A：存在性版本
+
+每个垂直态射都有 companion 和 conjoint：
+
+[
+\forall f,;
+\left|\operatorname{Companion}(f)\right|
+\times
+\left|\operatorname{Conjoint}(f)\right|.
+]
+
+### 定义 B：选择数据版本
+
+为每个态射具体选择 companion 和 conjoint：
+
+[
+\prod_f
+\operatorname{Companion}(f)
+\times
+\operatorname{Conjoint}(f).
+]
+
+### 定义 C：纤维化版本
+
+适当的源—目标函子：
+
+[
+(s,t):
+\mathbb D_1
+\longrightarrow
+\mathbb D_0\times\mathbb D_0
+]
+
+具有相应的 fibration 和 opfibration 结构。
+
+目标不是含糊地说“这些定义基本等价”，而是机器验证：
+
+[
+A\simeq B\simeq C
+]
+
+在什么精确条件下成立。
+
+必须明确处理：
+
+* mere fibration 与 cloven fibration；
+* cleavage 与 split cleavage；
+* cartesian/opcartesian lift 的唯一性；
+* 选择公理是否被使用；
+* 等价是逻辑等价、类型等价、范畴等价还是双范畴等价；
+* 构造往返之后是严格相等、同构，还是只存在高阶等价；
+* univalence 在哪一步消除选择依赖。
+
+现代 (\infty)-equipment 理论也把 companions、conjoints、tabulations 和不同形式的 fibrations 作为核心结构，而不是外围工具。([arXiv][3])
+
+### 审稿价值
+
+这一部分如果做得好，贡献不是：
+
+> “我们把经典定理输入了 Coq。”
+
+而是：
+
+> “我们澄清了传统文献中被非正式符号隐藏的 chosen/unchosen、split/non-split 和 equality/equivalence 差别。”
+
+这类澄清经常是真正有价值的形式化数学结果。
+
+---
+
+## 3. 单值 equipments 的结构恒等原理
+
+不能只构造 equipments 组成的 bicategory。必须证明一个明确的 univalence principle。
+
+目标形式类似：
+
+[
+(\mathbb D=\mathbb E)
+\simeq
+\operatorname{EquipEquiv}(\mathbb D,\mathbb E).
+]
+
+其中 `EquipEquiv` 必须是数学上自然的 equipment 等价，而不是为了让定理成立而人工定义出来的结构。
+
+论文需要证明：
+
+1. 底层 double-category equivalence 是否自动保存 equipment 性质；
+2. 保存 chosen companions 是否是附加数据；
+3. 在结构可缩时，这些保存数据是否自动唯一；
+4. property-based equipment 和 chosen equipment 是否形成等价的 bicategories；
+5. 忘却函子是否 fully faithful；
+6. equality 与适当 equipment equivalence 是否对应。
+
+如果只是直接调用“满子 bicategory 的单值性”，强度不足。必须先有前两部分的结构唯一性理论，再将其用于构造这个原理。
+
+---
+
+# 二、必须建立的 mates 演算
+
+## 4. 完整而不是零散的 mates correspondence
+
+论文必须建立一个可组合的形式化演算，而不是证明几个孤立引理。
+
+对于适当的 square (\alpha)，定义 mate 操作：
+
+[
+\alpha\longmapsto \alpha^\sharp
+]
+
+以及逆操作：
+
+[
+\beta\longmapsto\beta^\flat.
+]
+
+至少机器验证：
+
+### 往返律
+
+[
+(\alpha^\sharp)^\flat=\alpha,
+\qquad
+(\beta^\flat)^\sharp=\beta.
+]
+
+### 恒等兼容
+
+[
+(\operatorname{id})^\sharp=\operatorname{id}.
+]
+
+### 垂直复合兼容
+
+[
+(\beta\circ_v\alpha)^\sharp
+===========================
+
+\beta^\sharp\circ_v\alpha^\sharp,
+]
+
+必要时加入准确的 associator、unitor 和 whiskering。
+
+### 水平复合兼容
+
+[
+(\beta\circ_h\alpha)^\sharp
+===========================
+
+\beta^\sharp\circ_h\alpha^\sharp.
+]
+
+### Whiskering 兼容
+
+左右 whiskering 与 mate 转换相容。
+
+### 对偶性
+
+companion/conjoint、水平/垂直、op/co 等对偶操作之间的关系必须系统表达，而不是复制四遍代码。
+
+### 可逆性保持
+
+[
+\alpha\text{ 可逆}
+\iff
+\alpha^\sharp\text{ 可逆}.
+]
+
+### 自然性
+
+mate bijection 对边界态射及结构保持函子自然。
+
+如果只完成其中一两个公式，最多是基础库贡献；只有形成统一演算，才像一项独立成果。
+
+---
+
+## 5. Beck–Chevalley 理论必须成为正式应用
+
+定义一个 square 满足 Beck–Chevalley 条件，当且仅当其相应 mate 可逆。
+
+然后证明：
+
+1. 恒等 square 满足 Beck–Chevalley；
+2. 水平复合封闭；
+3. 垂直复合封闭；
+4. whiskering 下封闭；
+5. 等价替换下不变；
+6. equipment equivalence 保持该条件；
+7. 在 Span、Cospan 或 Prof 中恢复标准基变换条件；
+8. 给出至少一个失败反例，说明假设不可任意删除。
+
+最好形成类似：
+
+> **Beck–Chevalley pasting theorem**
+
+的统一结果：
+
+[
+BC(\alpha)\land BC(\beta)
+\Longrightarrow
+BC(\beta\odot\alpha).
+]
+
+论文应该展示，这一结果如何把一个复杂交换图证明压缩为可组合的局部条件。
+
+---
+
+# 三、为了冲击更高水平，必须有一个“大应用定理”
+
+## 6. 不要只拿 Span 当演示，要推出一个重要结果
+
+最推荐的应用是：
+
+> **从 cartesian equipment 到 cartesian bicategory 的机器验证转置定理。**
+
+近期研究证明：具有 iso-strong 有限乘积的双范畴，特别是 cartesian equipment，其底层 bicategory 是 cartesian bicategory；其证明关键使用 companions、conjoints，以及自然变换和伴随的转置。([arXiv][4])
+
+你的论文不能只复述该结果，至少应完成以下一种增强。
+
+### 方案 A：首次完整机器形式化
+
+完整形式化：
+
+[
+\text{cartesian equipment}
+\Longrightarrow
+\text{cartesian bicategory}.
+]
+
+并指出形式化过程中：
+
+* 哪些传统证明步骤隐藏了相干条件；
+* 哪些假设实际不需要；
+* 哪些结构可以由单值性自动获得。
+
+### 方案 B：削弱假设
+
+尝试将已有的 iso-strong finite products 条件削弱为更自然的 property-based 条件。
+
+例如研究：
+
+* 是否只需要某类 Beck–Chevalley square；
+* 是否只需要部分 companions；
+* 是否可以用结构可缩性替换 chosen coherence；
+* 是否可以在 displayed 或 indexed setting 中证明。
+
+### 方案 C：统一转置定理
+
+证明一个一般性的：
+
+> structure transposition theorem
+
+它不仅适用于 cartesian structure，还适用于：
+
+* monoidal structure；
+* adjunctions；
+* monads；
+* Frobenius structure；
+* closure/internal hom。
+
+然后把 cartesian bicategory 定理作为推论。
+
+这是最具有一区潜力的方案，但难度也最高。
+
+---
+
+# 四、实例必须达到的要求
+
+## 7. 至少两个完整实例，一个重量级实例
+
+### 必做实例一：Span
+
+在具有适当拉回的单值范畴中完成：
+
+* Span double category；
+* companions；
+* conjoints；
+* equipment structure；
+* mates；
+* Beck–Chevalley；
+* cartesian structure。
+
+### 必做实例二：Cospan 或 Relations
+
+不能只通过一句“对偶可得”带过全部形式化。应证明抽象 API 确实能复用，并展示：
+
+* 哪些代码通过对偶自动生成；
+* 哪些性质需要额外假设；
+* 哪些 Beck–Chevalley 条件成立。
+
+### 冲击高水平实例：Prof
+
+若技术条件允许，应完成 Profunctors 的至少一个实质模块：
+
+* profunctor composition；
+* companion/conjoint；
+* representable profunctors；
+* mate correspondence；
+* base change；
+* Yoneda 型结论。
+
+(\infty)-equipment 理论把 abstract profunctors、companion/conjoint Yoneda embeddings 和形式范畴论联系起来，说明 Prof 不是装饰性实例，而是该框架的原型。([arXiv][3])
+
+如果 Prof 因 coend 和宇宙层级完全无法落地，论文必须用另一个真正非平凡的实例替代，而不能只有 Span。
+
+---
+
+# 五、自动化必须是“有定理保证的工具”
+
+## 8. 不要只写几个 Ltac
+
+普通 tactic 很难构成高水平贡献。更强的目标是：
+
+> 对由 companions、conjoints、unitors、associators、whiskering 和 mates 生成的一类二维表达式，建立规范化过程。
+
+建议定义一个受控语法：
+
+[
+e ::= \operatorname{id}
+\mid \alpha
+\mid e\circ_h e
+\mid e\circ_v e
+\mid \operatorname{whisker}(e)
+\mid \operatorname{mate}(e).
+]
+
+然后实现：
+
+[
+\operatorname{normalize}:Expr\to NormalForm
+]
+
+并机器证明：
+
+### 健全性
+
+[
+\llbracket e\rrbracket
+======================
+
+\llbracket \operatorname{normalize}(e)\rrbracket.
+]
+
+### 最好还证明某种完备性
+
+在限定片段内：
+
+[
+\operatorname{normalize}(e_1)
+=============================
+
+\operatorname{normalize}(e_2)
+\Longrightarrow
+\llbracket e_1\rrbracket
+========================
+
+\llbracket e_2\rrbracket.
+]
+
+或者反方向，建立规范形唯一性。
+
+若完整完备性过难，最低要求是：
+
+* 健全性定理；
+* 清楚描述支持的语法片段；
+* 自动化在真实主定理中使用；
+* 失败情况公开；
+* 与纯 rewrite 方法比较。
+
+---
+
+## 9. 自动化实验不能只报告代码行数
+
+至少选取三组真实证明：
+
+1. companion 复合；
+2. mates 的水平复合律；
+3. Beck–Chevalley pasting；
+4. cartesian structure transposition 中的关键相干证明；
+5. Span 或 Prof 实例中的自然性。
+
+比较：
+
+* 手写证明长度；
+* 自动化证明长度；
+* 用户必须提供的中间引理数量；
+* 编译时间；
+* tactic 成功率；
+* 修改边界表达式后的鲁棒性；
+* 对 UniMath API 变化的敏感程度。
+
+但不要把“减少了多少行代码”当作主贡献。真正重要的是：
+
+> 自动化是否捕捉了一个一般的数学演算。
+
+---
+
+# 六、论文必须具有统一故事，而不是定理堆积
+
+建议最终题目升级为：
+
+> **Univalent Equipments: Structure Identity, Fibrational Recognition, and a Verified Calculus of Mates**
+
+主线应当是：
+
+[
+\boxed{
+\begin{array}{c}
+\text{companion 数据的可缩性}\
+\Downarrow\
+\text{equipment 是内在性质}\
+\Downarrow\
+\text{不同定义的机器验证等价}\
+\Downarrow\
+\text{单值 equipments 的结构恒等原理}\
+\Downarrow\
+\text{与选择无关的 mates 演算}\
+\Downarrow\
+\text{Beck--Chevalley 与结构转置应用}
+\end{array}
+}
+]
+
+审稿人阅读摘要时，应当能用一句话概括贡献：
+
+> 本文证明了单值双范畴上的 equipment 结构在适当条件下与选择无关，建立了其纤维化刻画和机器验证 mates 演算，并用该演算形式化了一个重要的结构转置定理。
+
+如果摘要只能写成：
+
+> 我们在 UniMath 中定义了 framed bicategories，并形式化了若干基本性质。
+
+则论文强度明显不够。
+
+---
+
+# 七、二区与一区竞争力的分层标准
+
+## 达到专业期刊可投稿的最低版
+
+必须完成：
+
+* companion/conjoint 正确定义；
+* equipment 结构；
+* 一个单值性结果；
+* mates 的基本往返律；
+* Span 实例；
+* 全部机器验证。
+
+这只能算完整的基础论文，不足以稳定支撑二区目标。
+
+## 比较可信的二区强度
+
+至少完成：
+
+1. chosen 与 unchosen equipment 的严格比较；
+2. companion/conjoint 结构可缩性；
+3. fibration/opfibration 识别定理；
+4. 单值 equipment 的结构恒等原理；
+5. 完整 mates 复合演算；
+6. Beck–Chevalley pasting theorem；
+7. 两个完整实例；
+8. 公开、无 `Admitted`、可复现代码；
+9. 至少一次外部专家审阅。
+
+## 具有一区竞争力的版本
+
+在二区要求上再增加至少两项：
+
+1. 一个传统文献中没有的结构定理；
+2. 比现有结果更弱假设下的结构转置定理；
+3. 有健全性证明的 mates 规范化算法；
+4. 某个限定片段的完备性或规范形唯一性；
+5. 完整 Profunctor 实例；
+6. cartesian equipment 到 cartesian bicategory 的完整机器验证与推广；
+7. 结果被 UniMath 主库接收；
+8. 形式化反过来修正或显著澄清已有纸面理论。
+
+作为参照，近年的高质量范畴论形式化工作通常不仅“录入已知结果”，还会构造重要伴随、证明反射性并推出范畴完备性，同时提供锁定的软件成果；这说明“主定理—重要推论—可复现库”的组合远比单纯代码规模更有说服力。([DROPS][5])
+
+---
+
+# 八、必须设置的停止条件
+
+Codex 不能为了完成任务而无限堆代码。遇到以下情况必须暂停或转向：
+
+1. 主定理已经在公开或未合并代码中完成；
+2. `EquipStr(D)` 的可缩性只是现有定理一行直接推论，且无新的统一结果；
+3. fibration 刻画完全是已有定义的机械重述；
+4. mates 自动化只能解决人为构造的小例子；
+5. 两个月后仍无法完成 identity companion 的可靠原型；
+6. 主要定理必须依赖明显不自然的过强假设；
+7. 只有形式化工程，没有新的数学澄清；
+8. 无法找到该领域专家认可问题价值。
+
+如果主定理失败，但得到一个清楚的反例或障碍分类，例如：
+
+> 单值性不足以使 equipment 结构成为性质，必须加入某个局部完备条件，
+
+那么这也可能成为比原计划更好的论文结果。
+
+---
+
+# 九、立项前的硬性外部验证
+
+在大量编码前，必须完成：
+
+1. 搜索 UniMath 主仓库、PR、issues 和相关个人分支；
+2. 联系《Univalent Double Categories》作者；
+3. 联系一位 equipment/framed bicategory 研究者；
+4. 提交一份两页 research note；
+5. 明确询问：
+
+   * 该问题是否已有人做；
+   * structure identity theorem 是否值得；
+   * chosen/unchosen 区分是否已有标准答案；
+   * 哪个应用最有价值；
+   * 哪些结果会被认为只是形式化练习。
+
+**至少得到一位领域专家的积极反馈，再进入全年开发。**
+
+Codex 可以完成大量文献整理、代码和证明尝试，但“论文是否真正新颖、定义是否自然、结果是否值得发表”不能只由 Codex 自我评审。
+
+---
+
+# 十、可直接加入 Codex 总提示词的质量要求
+
+```text
+# Publication-Quality Research Requirements
+
+The project must not be considered successful merely because framed
+bicategories or equipments have been defined in UniMath.
+
+The central objective is to produce a conceptually new theorem package,
+not only a library port.
+
+The paper must aim to establish:
+
+1. A structure identity theorem for equipment structures on suitably
+   univalent pseudo double categories.
+
+2. A precise comparison between:
+   (a) mere existence of companions and conjoints,
+   (b) globally chosen companion/conjoint data,
+   (c) an appropriate fibration/opfibration formulation.
+
+3. Exact hypotheses under which the type of chosen equipment structures
+   is a proposition or contractible when inhabited.
+
+4. A univalence principle identifying equality of equipments with the
+   mathematically natural notion of equipment equivalence.
+
+5. A complete, compositional, machine-verified calculus of mates,
+   including round-trip, horizontal composition, vertical composition,
+   whiskering, naturality, duality, and invertibility results.
+
+6. A formal Beck-Chevalley theory, including identity, horizontal and
+   vertical pasting, invariance under equivalence, and concrete examples.
+
+7. At least two complete examples, with Span mandatory and at least one
+   of Cospan, Relations, or Profunctors. A toy example does not count.
+
+8. At least one major application theorem. The preferred target is a
+   machine-verified and, if possible, generalized transposition theorem
+   from cartesian equipments to cartesian bicategories.
+
+9. A proof automation component derived from recurring proof patterns.
+   A mere collection of tactics is insufficient. Prefer a verified
+   normalization procedure for a clearly specified fragment of
+   companion/conjoint and mates expressions, with a soundness theorem.
+
+10. A real evaluation of the automation on central theorems and examples,
+    reporting limitations and failures as well as successes.
+
+The strongest contribution must be expressible as a mathematical theorem,
+not as a line count or repository size.
+
+The project must pivot or stop if novelty auditing shows that the main
+theorem package is already available, or if the work reduces to a direct
+full-subbicategory instantiation of existing UniMath results.
+
+Before large-scale implementation, produce paper proofs or detailed proof
+sketches for the structure identity theorem and the recognition theorem.
+Have them audited adversarially.
+
+Do not claim Q1/Q2 quality. Instead report which of the following have
+actually been achieved:
+
+Level 1:
+basic definitions and examples;
+
+Level 2:
+nontrivial formalization and univalence result;
+
+Level 3:
+structure identity and fibrational recognition theorems;
+
+Level 4:
+complete mates and Beck-Chevalley calculus with major applications;
+
+Level 5:
+new mathematics, verified normalization, substantial examples, upstream
+library integration, and independent expert validation.
+
+A submission candidate intended for a strong journal must reach at least
+Level 4. A top-tier aspirational version should reach Level 5.
+```
+
+## 最终要求
+
+这篇论文真正值得冲击高水平的最低公式是：
+
+[
+\boxed{
+\text{一个新结构定理}
++
+\text{一个精确识别定理}
++
+\text{一套完整演算}
++
+\text{一个重要应用}
++
+\text{可复现机器验证}
+}
+]
+
+少了“新结构定理”，它容易退化成库工程；少了“重要应用”，审稿人会怀疑框架是否有用；少了“完整演算”，工作会显得零散；少了机器验证的完整性，论文最核心的可信度就不存在。
+
+[1]: https://arxiv.org/abs/2310.09220 "[2310.09220] Univalent Double Categories"
+[2]: https://arxiv.org/pdf/2408.14335?utm_source=chatgpt.com "On functor double infinity categories"
+[3]: https://arxiv.org/pdf/2308.03583 "Formal category theory in $\infty$-equipments I"
+[4]: https://arxiv.org/abs/2404.08835 "Transposing cartesian and other structure in double categories"
+[5]: https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2025.20 "Formalizing Colimits in at"

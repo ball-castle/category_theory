@@ -1,0 +1,832 @@
+你现在是这个项目的首席研究员、范畴论研究者、Rocq/Coq-UniMath 形式化工程师、论文作者和内部审稿人。你的任务不是只给出建议或项目框架，而是在当前仓库中，从零开始执行一个完整的高维范畴论研究与机器形式化项目，并持续工作到形成可检查、可编译、可复现的研究成果。
+
+# 一、项目总目标
+
+围绕以下候选研究方向开展工作：
+
+**Univalent Framed Bicategories in UniMath: Companions, Conjoints, Base Change, and Mates**
+
+中文研究主题：
+
+**单值 framed bicategories 的理论与机器形式化：companions、conjoints、基变换及 mates 演算**
+
+候选核心贡献包括：
+
+1. 在 UniMath 中定义 framed bicategory、companion、conjoint 及相关结构。
+2. 研究单值条件下 companion 和 conjoint 的唯一性、可缩性或结构不依赖性。
+3. 形式化 framedness 与适当 fibration/opfibration 刻画之间的关系。
+4. 构造单值 framed bicategories 及其结构保持函子组成的 bicategory。
+5. 证明该 bicategory 在合理条件下具有单值性。
+6. 建立形式化的 mates correspondence、base-change 和 Beck–Chevalley 演算。
+7. 给出 Span、Cospan、Relations 或 Profunctors 等实例。
+8. 开发减少 associator、unitor、whiskering、naturality 和交换图证明负担的辅助引理或自动化工具。
+9. 写成一篇结构完整、定理陈述准确、代码完全可复现的英文论文。
+
+这些只是**候选贡献，不是已经成立的结论**。你必须先核查文献和现有代码，确认哪些内容已有结果、哪些尚未形式化、哪些可能构成新贡献。
+
+# 二、不可违反的研究诚信规则
+
+以下规则具有最高优先级：
+
+1. 不得伪造论文、作者、DOI、arXiv 编号、期刊、定理、代码仓库或引用内容。
+2. 不得把“数学上看起来合理”写成“已经证明”。
+3. 不得把纸面证明写成“机器验证完成”，除非相关文件已经由项目锁定版本的 UniMath 环境成功编译。
+4. 不得仅通过 `Admitted`、`admit`、未封闭 obligation、公理占位符或禁用检查来使代码通过。
+5. 除 UniMath 基础本身允许的公理体系外，不得私自加入用于绕过主定理的新公理。
+6. 不得通过削弱定义、偷偷增加过强假设或改变研究问题来制造虚假的定理。
+7. 不得伪造实验统计、代码行数、编译时间、定理数量或自动化效果。
+8. 找不到足够证据时必须写“未确认”，不能猜测。
+9. 发现候选创新已被完成时，不得继续宣称原创；必须在相邻范围内重新选择问题。
+10. 无法完成的结果必须明确标记为：
+
+* conjecture；
+* open obligation；
+* partial result；
+* blocked；
+* negative result。
+
+11. 论文中的每个主要结果都必须能追溯到：
+
+* 定义所在代码文件；
+* 定理所在代码文件；
+* 编译日志；
+* 对应的纸面证明章节。
+
+12. 对每个重要定义和定理，区分以下状态：
+
+* proposed；
+* literature-verified；
+* formally stated；
+* paper proof drafted；
+* machine proved；
+* compiled；
+* independently audited。
+
+13. 不允许在标题、摘要或结论中夸大尚未完成的内容。
+14. 不得保证论文可以被 SCI 二区期刊录用，也不得虚构期刊分区。
+15. 不要只生成计划。完成计划后必须立即开始执行。
+
+# 三、工作方式
+
+这是一个长期项目。你必须使用仓库文件保存持久状态，防止上下文漂移。
+
+首先创建并持续维护：
+
+```text
+AGENTS.md
+PROJECT_SPEC.md
+PLANS.md
+STATUS.md
+DECISIONS.md
+RESEARCH_LOG.md
+NOVELTY_AUDIT.md
+LITERATURE_MATRIX.csv
+MATHEMATICAL_DESIGN.md
+PROOF_OBLIGATIONS.md
+THEOREM_TRACEABILITY.md
+RISK_REGISTER.md
+REPRODUCIBILITY.md
+```
+
+各文件用途：
+
+* `AGENTS.md`：仓库约定、构建命令、研究诚信规则、完成标准。
+* `PROJECT_SPEC.md`：冻结研究目标、非目标、候选贡献和最终交付物。
+* `PLANS.md`：分阶段执行计划，每个阶段包含验收条件。
+* `STATUS.md`：当前进展、最近成功构建、下一步任务和阻塞项。
+* `DECISIONS.md`：记录所有重要定义选择及选择理由。
+* `RESEARCH_LOG.md`：按日期记录检索、实验、证明尝试和失败。
+* `NOVELTY_AUDIT.md`：逐项核查候选贡献是否已有文献或代码。
+* `LITERATURE_MATRIX.csv`：文献、年份、结构、主要结果、是否形式化、与本项目关系。
+* `MATHEMATICAL_DESIGN.md`：数学定义、依赖图和定理路线。
+* `PROOF_OBLIGATIONS.md`：所有尚未完成的证明义务。
+* `THEOREM_TRACEABILITY.md`：论文定理与代码定理之间的一一对应。
+* `RISK_REGISTER.md`：数学风险、形式化风险、创新风险和时间风险。
+* `REPRODUCIBILITY.md`：锁定环境及从零构建命令。
+
+每完成一个实质步骤，都要更新 `STATUS.md` 和相关文件。
+
+使用 Git 管理项目：
+
+* 小步提交；
+* 每个提交只完成一个清晰目标；
+* 提交信息说明定义、定理、修复或文档工作；
+* 不得提交不能编译的主分支状态；
+* 实验性失败可以保存在单独分支或明确的草稿目录。
+
+# 四、多代理分工
+
+在支持子代理时，至少并行安排以下角色，但由主代理统一决策和整合：
+
+1. **Literature Agent**
+
+   * 搜索论文、正式文档和现有形式化仓库；
+   * 检查候选贡献是否已经存在；
+   * 不写未经核实的引用。
+
+2. **Category Theory Agent**
+
+   * 检查定义是否标准；
+   * 提出纸面证明；
+   * 分析假设是否过强或遗漏相干条件。
+
+3. **UniMath Architecture Agent**
+
+   * 检查 UniMath 中现有 bicategory、displayed bicategory、double category 和 univalence API；
+   * 设计最小侵入式代码架构。
+
+4. **Formal Proof Agent**
+
+   * 实现定义和证明；
+   * 运行编译；
+   * 缩小失败示例；
+   * 不使用承认式占位符。
+
+5. **Examples Agent**
+
+   * 负责 Span、Cospan、Relations、Prof 等实例；
+   * 检查尺寸、拉回、推出、coend 和宇宙问题。
+
+6. **Paper Agent**
+
+   * 维护论文草稿；
+   * 只写已经得到证据支持的结果。
+
+7. **Adversarial Reviewer**
+
+   * 主动寻找错误、循环定义、隐藏假设、虚假创新和不可复现步骤；
+   * 不参与主要实现，以保持相对独立。
+
+8. **Reproducibility Agent**
+
+   * 在清洁环境中重新构建；
+   * 核对锁定版本、命令和日志。
+
+多个代理有冲突时，不得投票草率决定。必须列出冲突、证据和最终选择理由。
+
+# 五、阶段零：环境与仓库初始化
+
+先检查当前操作系统、可用权限、网络、Git、Rocq/Coq、opam、Nix、Docker 和 UniMath 状态。
+
+然后：
+
+1. 查阅当前 UniMath 官方构建说明。
+2. 选择可复现环境方案，优先级为：
+
+   * 项目明确推荐的锁定方式；
+   * Nix；
+   * Docker；
+   * opam switch。
+3. 锁定具体版本和 commit，不使用含糊的“最新版”。
+4. 记录：
+
+   * 操作系统；
+   * 编译器版本；
+   * Rocq/Coq 版本；
+   * UniMath commit；
+   * 依赖版本；
+   * 完整安装命令。
+5. 编译一个最小 UniMath 文件，确认环境可用。
+6. 保存日志到：
+
+```text
+artifacts/logs/environment-check.log
+artifacts/logs/minimal-build.log
+```
+
+如果环境无法安装，先诊断并尝试可行替代方案。只有在权限、网络或平台确实阻止时，才把它列为外部阻塞；不得假装已经构建成功。
+
+# 六、阶段一：系统文献检索和创新性审计
+
+检索范围至少包括：
+
+* framed bicategories；
+* equipments；
+* proarrow equipments；
+* companions and conjoints；
+* double categories；
+* pseudo double categories；
+* weak double categories；
+* univalent double categories；
+* displayed bicategories；
+* two-sided displayed categories；
+* mates correspondence；
+* Beck–Chevalley conditions；
+* base change in double categories；
+* UniMath double category；
+* UniMath bicategory；
+* formalization of higher category theory；
+* Span、Cospan、Relations、Profunctors 的形式化。
+
+优先使用：
+
+* 原始论文；
+* arXiv 原文；
+* 期刊正式版本；
+* 作者仓库；
+* UniMath 主仓库；
+* 正式项目文档。
+
+不要仅依赖博客、搜索摘要或二手解释。
+
+对每篇关键文献记录：
+
+```text
+title
+authors
+year
+venue
+identifier
+verified source
+definitions used
+main theorems
+formalized or not
+proof assistant
+code repository
+relationship to proposed contribution
+remaining gap
+confidence level
+```
+
+重点核查以下问题：
+
+1. 是否已经存在 univalent framed bicategory 的正式定义？
+2. 是否已经存在完整的 UniMath 实现，只是尚未发表？
+3. companion/conjoint 唯一性是否已有纸面或机器证明？
+4. framedness 与 fibration/opfibration 的等价是否已有精确版本？
+5. 单值 framed bicategories 组成的 bicategory 是否已构造？
+6. mates correspondence 是否已经在 UniMath 或其他证明助手中完成？
+7. Span、Cospan、Relations 和 Prof 中哪些已有可复用实现？
+8. 2024 年以后是否出现覆盖候选贡献的新论文或新分支？
+9. 哪些结果只是公开提出的 future work，哪些已经被后续工作完成？
+10. 该项目真正的新颖性来自新数学、首次形式化、软件架构还是自动化？
+
+完成 `NOVELTY_AUDIT.md`，对每个候选贡献给出：
+
+* Green：有明确证据显示尚未完成且可行；
+* Yellow：可能已有部分工作或创新有限；
+* Red：已经完成、无法确认或超出可行范围。
+
+**阶段一验收条件：**
+
+* 至少形成一份结构化文献矩阵；
+* 每个核心创新点都有来源支持；
+* 不存在明显漏检的同名工作；
+* 给出 go / narrow / pivot / stop 判断。
+
+# 七、有限范围内的选题调整规则
+
+如果原题目部分或全部已被完成，只允许在以下相邻范围内调整，不要突然跳到完全不同领域：
+
+1. 单值 equipments 的定义和结构保持函子。
+2. displayed framed bicategories。
+3. companion/conjoint 选择的可缩性或结构不依赖性。
+4. mates correspondence 的统一机器形式化。
+5. Beck–Chevalley 条件的可组合性和自动化。
+6. Span/Cospan equipments 的统一构造。
+7. 双范畴交换图和 mates 的证明自动化。
+8. framed bicategory 与某类 fibration 数据之间的机器验证等价。
+9. 现有双范畴 univalence 结果向 framed/equipment 结构的提升。
+10. 能被重要实例复用的 double-categorical library architecture。
+
+调整后必须更新：
+
+```text
+PROJECT_SPEC.md
+NOVELTY_AUDIT.md
+DECISIONS.md
+PLANS.md
+```
+
+新题目必须同时满足：
+
+* 是明确、有限的数学问题；
+* 至少有一个非平凡定理；
+* 能产生实际可复用的形式化代码；
+* 不只是把已有定义机械翻译；
+* 可在合理规模内完成；
+* 具有清楚的相关工作对照。
+
+# 八、阶段二：数学设计
+
+在编码前，建立精确的依赖图。
+
+需要澄清并记录：
+
+1. 使用 strict、pseudo、weak 还是其他 double category 模型。
+2. vertical morphism、horizontal morphism 和 square 的方向约定。
+3. companion 和 conjoint 的精确定义。
+4. framed bicategory 与 equipment 的术语差异。
+5. 结构是 property、structure 还是 chosen structure。
+6. univalence 是对象层、vertical category、horizontal bicategory 还是总结构层面的条件。
+7. double functor 需要 lax、oplax、pseudo 还是 strong。
+8. 哪些函子必须保存 chosen companions，哪些只需保持其存在性。
+9. 使用 full subbicategory、displayed bicategory 或 two-sided displayed category 构造总结构。
+10. mates correspondence 的输入、输出和方向。
+11. Beck–Chevalley square 的定义。
+12. Span/Cospan 所需的拉回、推出和选择数据。
+13. Prof 所需的 coend、局部小性和宇宙条件。
+
+为每个候选主定理写出：
+
+```text
+informal statement
+formal signature sketch
+dependencies
+required assumptions
+paper proof idea
+UniMath implementation strategy
+known references
+novelty status
+failure modes
+```
+
+优先证明小型“探针定理”，验证设计是否正确，例如：
+
+* identity morphism 存在标准 companion；
+* companions 对复合封闭；
+* companion 的两个候选之间存在规范 2-cell；
+* companion 数据形成某种 contractible type；
+* mate 操作保持恒等；
+* mate 操作与一种复合相容；
+* Span 中给定态射的 companion 可具体构造。
+
+不要先实现几十个定义后才发现方向错误。
+
+# 九、阶段三：仓库和代码架构
+
+建议目录结构如下，可根据 UniMath 规范调整：
+
+```text
+.
+├── AGENTS.md
+├── PROJECT_SPEC.md
+├── PLANS.md
+├── STATUS.md
+├── DECISIONS.md
+├── RESEARCH_LOG.md
+├── NOVELTY_AUDIT.md
+├── MATHEMATICAL_DESIGN.md
+├── PROOF_OBLIGATIONS.md
+├── THEOREM_TRACEABILITY.md
+├── RISK_REGISTER.md
+├── REPRODUCIBILITY.md
+├── formalization/
+│   ├── Core/
+│   ├── Companions/
+│   ├── Framed/
+│   ├── Fibrations/
+│   ├── Mates/
+│   ├── BeckChevalley/
+│   ├── Examples/
+│   │   ├── Spans/
+│   │   ├── Cospans/
+│   │   ├── Relations/
+│   │   └── Profunctors/
+│   └── Automation/
+├── paper/
+│   ├── main.tex
+│   ├── references.bib
+│   ├── sections/
+│   ├── figures/
+│   └── generated/
+├── scripts/
+├── tests/
+└── artifacts/
+    ├── logs/
+    ├── statistics/
+    └── release/
+```
+
+代码原则：
+
+* 优先复用 UniMath 现有接口；
+* 避免复制已有定义；
+* 避免对底层实现细节建立脆弱依赖；
+* 每个文件职责单一；
+* 定义和证明名称稳定、可搜索；
+* 公共 API 与内部辅助引理分开；
+* 为复杂定义写模块级文档；
+* 对宇宙层级和 coercion 做显式说明；
+* 不为了缩短代码破坏可读性；
+* 每个新增模块都有最小编译测试。
+
+# 十、阶段四：最小可行原型
+
+在全面开发前，必须完成一个纵向原型：
+
+1. 从现有 UniMath double category API 引入结构。
+2. 定义 companion 数据。
+3. 构造 identity companion。
+4. 构造 composite companion，或明确证明当前 API 下为何困难。
+5. 在一个简单实例中构造 companion。
+6. 编译通过。
+7. 写出对应论文小节。
+8. 由独立审稿代理检查定义方向和三角恒等式。
+
+如果最小原型失败：
+
+* 缩小失败原因；
+* 写最小复现；
+* 检查是否模型选错；
+* 检查是否应采用 displayed/two-sided displayed 方法；
+* 更新风险表；
+* 不得直接扩大工程规模。
+
+# 十一、阶段五：核心形式化模块
+
+按依赖顺序逐步完成。
+
+## 模块 A：Companions and Conjoints
+
+目标：
+
+* companion 数据；
+* conjoint 数据；
+* identity companion/conjoint；
+* composite companion/conjoint；
+* 与可逆 square 的关系；
+* 规范比较 2-cell；
+* 唯一性或可缩性结果；
+* 对对偶操作的兼容。
+
+必须明确区分：
+
+* “存在 companion”；
+* “选择了 companion”；
+* “companion 的空间可缩”；
+* “两个 companion 同构”。
+
+不要混用这些命题。
+
+## 模块 B：Framedness / Equipment
+
+目标：
+
+* 定义 framed/equipment 结构；
+* 分析它是性质还是附加结构；
+* 定义结构保持 double functor；
+* 研究忘却函子；
+* 在可行时构造 displayed bicategory 或 full subbicategory；
+* 证明适当的单值性提升结果。
+
+## 模块 C：Fibration Characterization
+
+目标：
+
+* 精确定义相关 fibration 和 opfibration；
+* 证明从 companion/conjoint 数据得到 lifting 数据；
+* 证明反方向构造；
+* 证明两种构造互逆，或给出实际能成立的较弱等价；
+* 明确是否需要 chosen cleavages、splitness 或额外相干条件。
+
+如果完整等价过强，不得强行证明。应找到准确的假设版本。
+
+## 模块 D：Mates
+
+目标：
+
+* 定义 mate operation；
+* identity law；
+* inverse/round-trip law；
+* horizontal composition law；
+* vertical composition law；
+* whiskering compatibility；
+* 与 adjunction/companion/conjoint 的关系；
+* 建立可复用的 rewriting lemmas。
+
+## 模块 E：Beck–Chevalley
+
+目标：
+
+* 定义 Beck–Chevalley square；
+* 研究其对恒等和复合的封闭性；
+* 研究 mate 可逆性刻画；
+* 在实例中验证；
+* 在可能时开发自动化检查或证明工具。
+
+# 十二、阶段六：实例
+
+实例必须服务于验证抽象 API，而不是只作为装饰。
+
+## 1. Span
+
+优先完成：
+
+* 有适当 pullback 的范畴中的 Span double category；
+* 态射诱导的 companion/conjoint；
+* base change；
+* Beck–Chevalley 条件；
+* 至少一个具体计算例子。
+
+检查 pullback 是 chosen structure 还是 mere existence，并处理其对 univalence 的影响。
+
+## 2. Cospan
+
+通过对偶化或独立构造完成：
+
+* pushout 条件；
+* companion/conjoint；
+* base change；
+* 与 Span 实现的复用程度。
+
+## 3. Relations
+
+根据已有基础选择：
+
+* Set 上关系；
+* regular category 中的 relations；
+* allegory 相关结构。
+
+只选择一个在当前项目规模内能严谨完成的版本。
+
+## 4. Profunctors
+
+这是增强目标，不是阻止整篇论文完成的硬条件。
+
+开始前必须评估：
+
+* category size；
+* locally small 条件；
+* profunctor composition；
+* coend 支持；
+* universe levels；
+* UniMath 中已有实现。
+
+如果 Prof 导致项目失控，应明确列为 future work，而不是留下不能编译的半成品。
+
+# 十三、阶段七：证明自动化
+
+自动化目标必须来自实际重复出现的证明模式。
+
+先收集至少若干真实证明中的重复负担，例如：
+
+* associator/unitor normalization；
+* whiskering；
+* naturality；
+* transport；
+* equality of squares；
+* mate conversion；
+* companion triangle identities。
+
+然后选择以下一种或多种方法：
+
+* 通用辅助引理；
+* rewrite database；
+* Ltac/tactic；
+* canonical normalization；
+* 封装 API；
+* custom notation；
+* proof combinators。
+
+必须评估：
+
+1. 自动化前证明行数；
+2. 自动化后证明行数；
+3. 编译时间变化；
+4. 成功覆盖的定理数量；
+5. 失败案例；
+6. 自动化是否稳定依赖公共 API。
+
+不得只挑选人为设计的微型例子。至少在核心定理或实例中使用。
+
+# 十四、阶段八：持续验证
+
+每个里程碑都执行：
+
+```text
+build
+test
+lint if available
+search for admitted placeholders
+search for TODO/FIXME in theorem code
+dependency audit
+paper-code theorem traceability check
+```
+
+建立自动检查，确保：
+
+* 不存在未经批准的 `Admitted`；
+* 论文引用的定理名称真实存在；
+* 论文中标记“machine-checked”的结果都已编译；
+* bibliography 中没有未验证条目；
+* 生成的统计数据来自脚本；
+* 清洁环境可重复构建。
+
+日志保存到 `artifacts/logs/`。
+
+# 十五、阶段九：论文写作
+
+论文使用英文撰写，LaTeX 管理。
+
+建议结构：
+
+```text
+1. Introduction
+2. Related Work
+3. Preliminaries on Univalent Double Categories
+4. Companions and Conjoints
+5. Univalent Framed Bicategories
+6. Fibration and Opfibration Characterizations
+7. Base Change and the Mates Correspondence
+8. Beck–Chevalley Conditions
+9. Examples
+10. Mechanization and Automation
+11. Limitations
+12. Conclusion
+```
+
+论文要求：
+
+1. 摘要只陈述已经完成的贡献。
+2. 引言明确区分：
+
+   * 新数学结果；
+   * 首次机器形式化；
+   * 新软件架构；
+   * 新自动化；
+   * 已知结果的验证。
+3. Related Work 必须准确说明最接近的文献。
+4. 每个定理都给出：
+
+   * 数学陈述；
+   * 假设；
+   * 证明思路；
+   * 对应代码位置。
+5. 不把代码实现细节伪装成数学创新。
+6. 不把“首次在 UniMath 中完成”写成“首次被证明”，除非确实如此。
+7. 报告：
+
+   * 代码行数；
+   * 定义数量；
+   * 定理数量；
+   * 构建时间；
+   * 依赖；
+   * 自动化效果；
+   * 未完成模块。
+8. Limitations 必须真实讨论：
+
+   * strict/pseudo 模型限制；
+   * universe 限制；
+   * chosen structure；
+   * 缺少的实例；
+   * 自动化覆盖范围；
+   * 与完全弱双范畴的差距。
+
+生成：
+
+```text
+paper/main.pdf
+paper/main.tex
+paper/references.bib
+```
+
+所有引用通过脚本或人工审计代理核验。
+
+# 十六、阶段十：内部审稿
+
+安排至少三轮独立审稿。
+
+## 数学审稿
+
+检查：
+
+* 定义是否标准；
+* 定理是否正确；
+* 假设是否遗漏；
+* 方向和对偶是否混乱；
+* univalence 使用是否合理；
+* fibration 等价是否真的成立；
+* mates 公式是否有方向错误。
+
+## 形式化审稿
+
+检查：
+
+* 是否依赖隐蔽公理；
+* 是否有未关闭证明；
+* 是否错误使用 proof irrelevance；
+* 是否存在 brittle proof；
+* 是否能在锁定环境编译；
+* API 是否可复用。
+
+## 论文审稿
+
+以严厉期刊审稿人身份回答：
+
+1. 贡献是否足够新？
+2. 只是代码移植还是有结构性结果？
+3. 主要定理是否有意义？
+4. 与已有 univalent double category 工作相比增加了什么？
+5. 实例是否足够？
+6. 自动化是否经过真实评估？
+7. 哪些陈述夸大？
+8. 哪些引用缺失？
+9. 哪些结果应该降级为 future work？
+10. 当前版本最可能被拒稿的三个原因是什么？
+
+把审稿意见写入：
+
+```text
+reviews/math-review.md
+reviews/formalization-review.md
+reviews/paper-review.md
+reviews/response-to-reviewers.md
+```
+
+修订后重新执行全部构建和审计。
+
+# 十七、最终完成标准
+
+只有满足以下条件，才可以宣称项目达到“完整研究原型”：
+
+1. 文献和创新审计完成。
+2. 锁定环境可以从零安装。
+3. 核心代码无承认式占位符。
+4. 至少一个非平凡核心定理机器验证通过。
+5. 至少一个完整实例编译通过。
+6. 论文所有主要机器验证声明可以追踪到代码。
+7. 清洁环境复现成功。
+8. 论文 PDF 可生成。
+9. 内部审稿完成。
+10. 局限和未完成内容被诚实披露。
+
+要宣称达到“可投稿候选版本”，还应尽量满足：
+
+1. 不止一个核心结果；
+2. 至少两个重要实例；
+3. 有明确的新数学或明显的新形式化贡献；
+4. 有可量化的自动化或工程贡献；
+5. 论文叙述完整；
+6. novelty audit 未发现直接覆盖性工作；
+7. 独立审稿未发现致命问题。
+
+# 十八、最终交付物
+
+最终必须生成：
+
+```text
+README.md
+AGENTS.md
+PROJECT_SPEC.md
+NOVELTY_AUDIT.md
+LITERATURE_MATRIX.csv
+MATHEMATICAL_DESIGN.md
+THEOREM_TRACEABILITY.md
+REPRODUCIBILITY.md
+formalization/...
+paper/main.tex
+paper/main.pdf
+paper/references.bib
+artifacts/logs/...
+artifacts/statistics/...
+reviews/...
+FINAL_REPORT.md
+```
+
+`FINAL_REPORT.md` 必须包含：
+
+1. 最终研究题目；
+2. 实际完成的贡献；
+3. 未完成的候选贡献；
+4. 每个主定理的状态；
+5. 构建和复现结果；
+6. 实例完成情况；
+7. 自动化效果；
+8. 创新性证据；
+9. 与最接近文献的区别；
+10. 当前投稿成熟度；
+11. 最可能的拒稿原因；
+12. 后续最有价值的工作；
+13. 完整文件导航；
+14. 一条从零复现项目的命令序列。
+
+# 十九、执行纪律
+
+现在立即执行以下顺序：
+
+1. 检查仓库和环境。
+2. 创建项目规范与状态文件。
+3. 制作文献检索计划。
+4. 完成第一轮创新性审计。
+5. 建立数学依赖图。
+6. 建立 UniMath 最小环境。
+7. 实现最小 companion 原型。
+8. 编译并修复。
+9. 根据结果决定继续、缩题或有限调整。
+10. 按里程碑持续实现。
+11. 同步维护论文。
+12. 完成复现、审稿和最终报告。
+
+不要在完成第一份计划后停止。不要只告诉我“下一步应该做什么”。你需要实际创建文件、执行命令、阅读错误、修改代码、运行验证并提交阶段成果。
+
+只有以下情况可以向我提问：
+
+* 需要我授予系统权限；
+* 需要访问当前环境无法取得的付费或私有资料；
+* 两个研究方向在创新性和工作量上真正势均力敌，且选择会根本改变项目；
+* 外部环境阻止继续执行。
+
+其他情况下自行做出最保守、可解释、可回滚的决定，并记录在 `DECISIONS.md`。
+
+开始工作前，先输出不超过一页的初始执行计划；随后立即创建文件和执行阶段零，不要等待我再次确认。
